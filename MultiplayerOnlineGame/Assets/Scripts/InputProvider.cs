@@ -2,6 +2,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class InputProvider : SimulationBehaviour, INetworkRunnerCallbacks
@@ -40,6 +41,7 @@ public class InputProvider : SimulationBehaviour, INetworkRunnerCallbacks
 
     private void OnInput(NetworkRunner runner, NetworkInput input)
     {
+        InputSystem.Update();
         var myInput = new MyInput();
         var playerActions = _playerActionMap.Player;
         myInput.buttons.Set(MyButtons.Forward, playerActions.Move.ReadValue<Vector2>().y > 0);
