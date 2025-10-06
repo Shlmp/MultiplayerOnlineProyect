@@ -4,20 +4,43 @@ using Fusion;
 public class Player : NetworkBehaviour
 {
     private InputActions inputActions;
-    
-    void Start()
+
+    private bool eggPain = false;
+    private bool canShoot = false;
+
+    void Awake()
     {
         inputActions = new InputActions();
         inputActions.Player.Enable();
+
+    }
+
+    private void Update()
+    {
+        if (!eggPain)
+        {
+            eggPain = inputActions.Player.Action.triggered;
+        }
+
+        if (!canShoot)
+        {
+            canShoot = inputActions.Player.Shoot.triggered;
+        }
     }
 
     public override void FixedUpdateNetwork()
     {
         base.FixedUpdateNetwork();
-        bool foo = inputActions.Player.Action.triggered;
-        if (Object.HasInputAuthority && foo == true)
+        if (Object.HasInputAuthority && eggPain == true)
         {
+            eggPain = false;
             RPC_CallTrafficLight();
+        }
+
+        if (Object.HasInputAuthority && canShoot == true)
+        {
+            canShoot = false;
+            Rpc_Shoot();
         }
     }
 
@@ -26,4 +49,24 @@ public class Player : NetworkBehaviour
     {
         ObjectManager.singleton.trafficLight.ChangeColor();
     }
+
+    #region Shoot
+    public GameObject bulletPrefab;
+    public Transform shootPos;
+    public float bulletSpeed = 3;
+    
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void Rpc_Shoot()
+    {
+        var bullet = Runner.Spawn(bulletPrefab, shootPos.position, shootPos.rotation, Object.InputAuthority);
+        if (bullet.TryGetComponent(out Rigidbody rb))
+        {
+            rb.AddForce(bullet.transform.forward * bulletSpeed, ForceMode.Impulse);
+        }
+        else
+        {
+            Debug.Log("RigidBody not assigned");
+        }
+    }
+    #endregion
 }
