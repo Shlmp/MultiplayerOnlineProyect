@@ -8,11 +8,10 @@ public class Player : NetworkBehaviour
     private bool eggPain = false;
     private bool canShoot = false;
 
-    void Awake()
+    private void Start()
     {
         inputActions = new InputActions();
         inputActions.Player.Enable();
-
     }
 
     private void Update()
@@ -54,7 +53,9 @@ public class Player : NetworkBehaviour
     public GameObject bulletPrefab;
     public Transform shootPos;
     public float bulletSpeed = 3;
-    
+
+    public GameObject particles;
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     private void Rpc_Shoot()
     {
@@ -67,6 +68,13 @@ public class Player : NetworkBehaviour
         {
             Debug.Log("RigidBody not assigned");
         }
+        Rpc_PlayShootEffect();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void Rpc_PlayShootEffect()
+    {
+        Instantiate(particles, shootPos.position, shootPos.rotation);
     }
     #endregion
 }

@@ -10,7 +10,7 @@ public class InputProvider : SimulationBehaviour, INetworkRunnerCallbacks
     private InputActions _playerActionMap;
     private bool done;
 
-    private void Awake()
+    private void Start()
     {
         if (Runner != null)
         {
@@ -39,7 +39,7 @@ public class InputProvider : SimulationBehaviour, INetworkRunnerCallbacks
         done = true;
     }
 
-    private void OnInput(NetworkRunner runner, NetworkInput input)
+    public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         InputSystem.Update();
         var myInput = new MyInput();
@@ -106,11 +106,6 @@ public class InputProvider : SimulationBehaviour, INetworkRunnerCallbacks
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
     {
         //throw new NotImplementedException();
-    }
-
-    void INetworkRunnerCallbacks.OnInput(NetworkRunner runner, NetworkInput input)
-    {
-        OnInput(runner, input);
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)

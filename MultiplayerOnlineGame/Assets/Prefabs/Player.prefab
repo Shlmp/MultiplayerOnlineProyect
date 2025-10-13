@@ -253,3 +253,4 @@ MonoBehaviour:
   bulletPrefab: {fileID: 4767622823758038359, guid: db54d32484e57714b8e516461cf46a81, type: 3}
   shootPos: {fileID: 5989087459173144873}
   bulletSpeed: 6
+  particles: {fileID: 404415385866959769, guid: 1c24b8ca5b828964a912dafa8ad179b1, type: 3}
